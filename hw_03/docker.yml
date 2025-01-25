@@ -1,0 +1,24 @@
+#https://www.redhat.com/en/blog/software-packages-ansible
+#hhttps://docs.ansible.com/ansible/latest/collections/ansible/builtin/dnf_module.html
+- name: "Install docker & run on RedOs 8" 
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "install docker"
+      become: true
+      become_user: root
+      ansible.builtin.dnf:
+        name: 
+        - docker-ce
+        - docker-ce-cli
+        state: present
+    - name: "Start Docker daemon"
+      register: out
+      become: true
+      become_user: root
+      ansible.builtin.service:
+        name: docker
+        state: started
+#    - name: "Show debug output after start attempt"
+#      ansible.builtin.debug:
+#        msg: "{{ out }}"

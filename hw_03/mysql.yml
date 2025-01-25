@@ -1,0 +1,25 @@
+---
+#MySQL пакеты отсутствуют в репозиториях РЕД ОС. 
+#Поэтому будем делать Mariadb
+- name: "Instal & run Mariadb"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: "install mariadb mariadb-server"
+      become: true
+      become_user: root
+      ansible.builtin.dnf:
+        name: 
+        - mariadb
+        - mariadb-server
+        state: present
+    - name: "start mariadb"
+      become: true
+      become_user: root
+      register: out
+      ansible.builtin.service:
+        name: mariadb
+        state: started
+#    - name: "Show debug output after start attempt"
+#      ansible.builtin.debug:
+#        msg: "{{ out }}"
