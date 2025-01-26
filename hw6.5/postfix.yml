@@ -1,0 +1,20 @@
+---
+- name: "Install or remove postfix on RedOs 8" 
+  hosts: hw116
+  gather_facts: false
+  tasks:
+    - name: "install postfix"
+      tags: 'init postfix'
+      become: true
+      become_user: root
+      ansible.builtin.dnf:
+        name: postfix
+        state: present
+    - name: "remove postfix"
+      tags: 'drop postfix'
+      become: true
+      become_user: root
+      ansible.builtin.dnf:
+        name: postfix
+        state: absent
+      

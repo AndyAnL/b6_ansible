@@ -1,0 +1,24 @@
+---
+- name: Create user1 on server & pass key file to server
+  hosts: hw116
+  gather_facts: false
+  tasks: 
+#https://docs.ansible.com/ansible/latest/collections/ansible/builtin/user_module.html
+    - name: Create user1
+      become: true
+      become_user: root
+      ansible.builtin.user:
+        name: user1
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
+#https://docs.ansible.com/ansible/latest/collections/ansible/builtin/fetch_module.html
+    - name: Copy remote key to server
+      become: true
+      become_user: root
+      ansible.builtin.fetch:
+        src: /home/user1/.ssh/id_rsa.pub
+        dest: /home/devops/ansible/b6_ansible/hw6.5/
+        flat: yes
+  
+
