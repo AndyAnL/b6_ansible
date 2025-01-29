@@ -1,0 +1,63 @@
+---
+# tasks file for dnsmasq
+
+- name: "Install dnsmasq" 
+  ansible.builtin.dnf:
+    name: dnsmasq
+    state: present
+#Создаем резервную копию dnsmasq.conf
+- name: backup dnsmasq.conf
+  ansible.builtin.copy:
+    src: /etc/dnsmasq.conf
+    dest: /etc/dnsmasq.conf.old
+    remote_src: false
+
+
+#правим /etc/dnsmasq.conf 
+#Инструкция взята
+#https://redos.red-soft.ru/base/redos-7_3/7_3-network/7_3-customize-dns/7_3-caching-dns-server-with-dnsmasq/?nocache=1737979206328
+
+- name: "resolv-file"
+  ansible.builtin.lineinfile:
+    path: '/etc/dnsmasq.conf'
+    regexp: '#resolv-file='
+    line: 'resolv-file=/etc/resolv.dnsmasq'
+
+- name: "no-poll"
+  ansible.builtin.lineinfile:
+    path: '/etc/dnsmasq.conf'
+    regexp: '#no-poll'
+    line: 'no-poll'
+
+- name: "listen-address"
+  ansible.builtin.lineinfile:
+    path: '/etc/dnsmasq.conf'
+    regexp: '#listen-address'
+    line: 'listen-address=127.0.0.1'
+
+- name: "cache-size=150"
+  ansible.builtin.lineinfile:
+    path: '/etc/dnsmasq.conf'
+    regexp: '#cache-size=150'
+    line: 'cache-size=150'
+
+- name: "Add string all-servers"
+  ansible.builtin.lineinfile:
+      path: '/etc/dnsmasq.conf'
+      line: 'all-servers'
+
+#enabled service 
+#Отключил есть конфликт c systemd-resolved 53 порт
+
+#- name: "Enable service dnsmasq"
+#  ansible.builtin.service:
+#    name: dnsmasq
+#    enabled: yes
+
+#Запускаем сервис
+
+- name: "Start dnsmasq"
+  #register: out
+  ansible.builtin.service:
+    name: dnsmasq
+    state: started

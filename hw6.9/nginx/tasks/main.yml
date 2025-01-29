@@ -1,0 +1,87 @@
+---
+# tasks file for nginx
+
+- name: Install nginx
+  become: true
+  ansible.builtin.package:
+    name: 'nginx'
+    state: present
+
+
+- name: Install php-fpm
+  become: true
+  ansible.builtin.package:
+    name: 'php-fpm'
+    state: present
+
+#enabled service nginx
+- name: "Enable service nginx"
+  ansible.builtin.service:
+    name: nginx
+    enabled: yes
+    state: started
+
+#enabled service php-fpm
+- name: "Enable service php-fpm"
+  ansible.builtin.service:
+    name: php-fpm
+    enabled: yes
+    state: started
+
+# Удаляем старый настроечный файл
+- name: Delete file php.conf
+  ansible.builtin.file:
+    state: absent
+    path: /etc/nginx/default.d/php.conf
+
+# Копируем конфигурационный файл php.conf
+- name: Copy php.conf 
+  ansible.builtin.copy:
+    src: php.conf 
+    dest: /etc/nginx/default.d/ # link to /path/to/file
+    follow: yes
+
+# Копируем страницу с выводом PHP версии
+- name: Copy index.php 
+  ansible.builtin.copy:
+    src: index.php 
+    dest: /usr/share/nginx/html/ # link to /path/to/file
+    follow: yes
+
+# Дополните роль из п.3: пусть DocumentRoot будет в 
+# директории /opt/nginx/ansible. Используйте handler для перечитывания конфигурации nginx.
+
+# Создаем директорию
+- name: Create a directory /opt/nginx/ansible
+  ansible.builtin.file:
+    path: /opt/nginx/ansible
+    state: directory
+    
+# Удаляем старый настроечный файл nginx.conf
+- name: Delete file nginx.conf
+  ansible.builtin.file:
+    state: absent
+    path: /etc/nginx/nginx.conf
+
+# мы можем установить корень документа по умолчанию в файле конфигурации nginx.conf
+#root         /usr/share/nginx/html;
+# Копируем nginx.conf
+- name: Copy nginx.conf 
+  ansible.builtin.copy:
+    src: nginx.conf 
+    dest: /etc/nginx/nginx.conf # link to /path/to/file
+    follow: yes
+
+# Копируем страницу с выводом PHP версии в новый root
+- name: Copy index.php new DocumentRoot
+  ansible.builtin.copy:
+    src: index.php 
+    dest: /opt/nginx/ansible
+    follow: yes
+
+  notify:
+    - Restart php-fpm
+    - Restart nginx
+
+
+

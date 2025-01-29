@@ -1,0 +1,42 @@
+---
+- name: Create group superusers & user2 user3
+  hosts: hw116
+  gather_facts: false
+  tasks:
+# Создаем группу superusers
+    - name: Create group superusers
+      become: true
+      ansible.builtin.group:
+        name: superusers
+        state: present
+#Добавляем права sudo группе. Как это сработает помнится когда я пробовал отредактировать фай через mcedit файл испортился
+#Не испортился )
+# Делаем по аналогии с well
+# %wheel  ALL=(ALL)       ALL
+    - name: Add group to sudoers
+      become: true
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        line: '%superusers  ALL=(ALL) ALL'
+#Убираем ввод пароля по аналогии
+# %wheel  ALL=(ALL)       NOPASSWD: ALL
+    - name: group sudoers without a password
+      become: true
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        line: '%superusers  ALL=(ALL) NOPASSWD: ALL'
+# Создаем пользователей добавляем из в группу и задаем пароль devops
+    - name: Create user2 in superusers group
+      become: true
+      ansible.builtin.user:
+        name: user2
+        group: superusers
+        password: '{{ "devops" | password_hash("sha512") }}'
+    - name: Create user3 in superusers group 
+      become: true
+      ansible.builtin.user:
+        name: user3
+        group: superusers
+        password: '{{ "devops" | password_hash("sha512") }}'

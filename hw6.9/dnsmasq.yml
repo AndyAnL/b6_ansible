@@ -1,0 +1,7 @@
+---
+- name: instal & config dnsmasq
+  hosts: hw116
+  gather_facts: false
+  become: true
+  roles:
+    - dnsmasq

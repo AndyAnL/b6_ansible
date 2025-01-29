@@ -1,0 +1,7 @@
+---
+- name: vsftp playbook
+  hosts: localhost
+  gather_facts: false
+  become: true
+  roles:
+    - vsftpd

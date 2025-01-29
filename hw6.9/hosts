@@ -1,0 +1,5 @@
+[local]
+localhost
+
+[hw116]
+192.168.1.117 ansible_user=hw

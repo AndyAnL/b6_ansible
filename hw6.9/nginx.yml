@@ -1,0 +1,7 @@
+---
+- name: instal nginx & php-fpm а как по русски пишится
+  hosts: hw116
+  gather_facts: false
+  become: true
+  roles:
+    - nginx
