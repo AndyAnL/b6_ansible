@@ -1,0 +1,11 @@
+---
+# tasks file for user
+
+# Создаем пользователей добавляем  в группу и задаем пароль devops
+    - name: Create hw03 in whel group
+      become: true
+      ansible.builtin.user:
+        name: hw03
+        group: wheel
+        password: '{{ "devops" | password_hash("sha512") }}'
+    

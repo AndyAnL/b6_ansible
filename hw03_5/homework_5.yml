@@ -1,0 +1,14 @@
+---
+# «Добавьте нового пользователя с авторизацией по ключу» — роль «users».
+# «Поднимите nginx server», «Укажите в nginx отправлять php на 9000 порт» — роль «http».
+# «Поднимите php-fpm», «Укажите php-fpm принимать на 9000 порт»— роль «php».
+
+- name: homework pat 5
+  hosts: hw116
+  gather_facts: false
+  become: true
+  roles:
+    - user 
+    - http
+    - php
+

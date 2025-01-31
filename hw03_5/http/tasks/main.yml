@@ -1,0 +1,15 @@
+---
+# tasks file for http
+
+- name: Install nginx
+  become: true
+  ansible.builtin.package:
+    name: 'nginx'
+    state: present
+
+#enabled service nginx
+- name: "Enable service nginx"
+  ansible.builtin.service:
+    name: nginx
+    enabled: yes
+    state: started
