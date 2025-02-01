@@ -1,0 +1,39 @@
+- name: Installing php-fpm and changing the configuration 
+  hosts: hw116
+  gather_facts: false
+  tasks: 
+
+    # Копируем страницу с выводом PHP версии
+  - name: Copy index.php
+    become: true
+    ansible.builtin.copy:
+      src: index.php 
+      dest: /usr/share/nginx/html/ # link to /path/to/file
+      follow: yes
+  
+  # Удаляем старый настроечный файл
+  - name: Delete file php.conf
+    become: true
+    ansible.builtin.file:
+      state: absent
+      path: /etc/nginx/default.d/php.conf
+  
+  # Копируем конфигурационный файл php.conf
+  - name: Copy php.conf 
+    become: true
+    ansible.builtin.copy:
+      src: ./files/php.conf 
+      dest: /etc/nginx/default.d/ # link to /path/to/file
+      follow: yes 
+  
+  - name: Restart php-fpm
+    become: true
+    ansible.builtin.service:
+      name: 'php-fpm'
+      state: restarted
+      
+  - name: Restart nginx
+    become: true
+    ansible.builtin.service:
+      name: 'nginx'
+      state: restarted
