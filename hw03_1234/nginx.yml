@@ -1,0 +1,19 @@
+---
+- name: Install & enabled nginx
+  hosts: hw116
+  gather_facts: false
+  tasks: 
+
+    - name: Install nginx
+      become: true
+      ansible.builtin.package:
+        name: 'nginx'
+        state: present
+    
+    #enabled service nginx
+    - name: "Enable service nginx"
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        enabled: yes
+        state: started
