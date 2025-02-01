@@ -1,0 +1,51 @@
+---
+- name: Installing php-fpm and changing the configuration 
+  hosts: hw116
+  gather_facts: false
+  tasks: 
+
+    - name: Install php-fpm
+      become: true
+      ansible.builtin.package:
+        name: 'php-fpm'
+        state: present
+
+    #enabled service php-fpm
+    - name: "Enable service php-fpm"
+      become: true
+      ansible.builtin.service:
+        name: php-fpm
+        enabled: yes
+        state: started
+
+    # меняем прослушивание php-fpm с сокета на tcp файл www.conf
+    # ;listen = /run/php-fpm/www.sock
+    # listen = 127.0.0.1:9000
+    # копируем измененный конфиг
+    
+    # Удаляем старый настроечный файл
+    - name: Delete file www.conf
+      become: true
+      ansible.builtin.file:
+        state: absent
+        path: /etc/php-fpm.d/www.conf
+    
+    # Копируем конфигурационный файл www.conf
+    - name: Copy php.conf 
+      become: true
+      ansible.builtin.copy:
+        src: ./files/www.conf
+        dest: /etc/php-fpm.d/
+        follow: yes
+
+    - name: Restart php-fpm
+      become: true
+      ansible.builtin.service:
+        name: 'php-fpm'
+        state: restarted
+    
+    - name: Restart nginx
+      become: true
+      ansible.builtin.service:
+        name: 'nginx'
+        state: restarted
