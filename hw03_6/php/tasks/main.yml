@@ -1,0 +1,14 @@
+---
+# tasks file for php
+
+- name: Install php-fpm
+  ansible.builtin.package:
+    name: 'php-fpm'
+    state: present
+
+#enabled service php-fpm
+- name: "Enable service php-fpm"
+  ansible.builtin.service:
+    name: php-fpm
+    enabled: yes
+    state: started

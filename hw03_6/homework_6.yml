@@ -1,0 +1,29 @@
+---
+# Задание 6
+# Поднимите nginx и php-fpm на разных серверах:
+# Для nginx сервера используйте роль «users» «http».
+# Для php-fpm сервера используйте роль «users» «php».
+
+# Create user
+- name: homework pat 6
+  hosts: hw116, hw118
+  gather_facts: false
+  become: true
+  roles:
+    - users 
+
+# Instal nginx 
+- name: homework pat 6
+  hosts: hw116
+  gather_facts: false
+  become: true
+  roles:
+    - http
+
+# Instal php-fpm 
+- name: homework pat 6
+  hosts: hw118
+  gather_facts: false
+  become: true
+  roles:
+    - php
